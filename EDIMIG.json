@@ -1,0 +1,108 @@
+{
+    "level0": {
+        "parent": "",
+        "level0_1": {
+            "parent": "",
+            "element1": "UNH"
+        },
+        "level0_2": {
+            "parent": "",
+            "element1": "BGM"
+        },
+        "level0_3": {
+            "parent": "",
+            "element1": "UNT"
+        }
+    },
+    "level1": {
+        "parent": "level0",
+        "level1_1": {
+            "parent": "",
+            "element1": "DTM"
+        },
+        "level1_2": {
+            "parent": "",
+            "group1": "SG1",
+            "element1": "RFF"
+        },
+        "level1_3": {
+            "parent": "",
+            "group1": "SG2",
+            "element1": "NAD"
+        },
+        "level1_4": {
+            "parent": "",
+            "group1": "SG4",
+            "element1": "IDE"
+        }
+    },
+    "level2": {
+        "parent": "level1",
+        "level2_1": {
+            "parent": "level1_3",
+            "group1": "SG3",
+            "element1": "CTA"
+        },
+        "level2_2": {
+            "parent": "level1_4",
+            "element1": "IMD",
+            "element2": "DTM",
+            "element3": "STS",
+            "element4": "PTY",
+            "element5": "FTX",
+            "element6": "AGR",
+            "group1": "SG5",
+            "element7": "LOC",
+            "group2": "SG6",
+            "element8": "RFF",
+            "group3": "SG8",
+            "element9": "SEQ",
+            "group4": "SG12",
+            "element10": "NAD"
+        }
+    },
+    "level3": {
+        "parent": "level2",
+        "level3_1": {
+            "parent": "level2_1",
+            "element1": "COM"
+        },
+        "level3_2": {
+            "parent": "level2_2",
+            "level3_2_1": {
+                "parent": "group2",
+                "element1": "DTM"
+            },
+            "level3_2_2": {
+                "parent": "group3",
+                "element1": "RFF",
+                "element2": "PIA",
+                "group1": "SG9",
+                "element3": "QTY",
+                "group2": "SG10",
+                "element4": "CCI"
+            },
+            "level3_2_3": {
+                "parent": "group4",
+                "element1": "RFF"
+            }
+        }
+    },
+    "level4": {
+        "parent": "level3",
+        "level4_1": {
+            "parent": "level3_2",
+            "level4_1_1": {
+                "parent": "level3_2_2",
+                "level4_1_1_1": {
+                    "parent": "group1",
+                    "element": "DTM"
+                },
+                "level4_1_1_2": {
+                    "parent": "group2",
+                    "element": "CAV"
+                }
+            }
+        }
+    }
+}
