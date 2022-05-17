@@ -1,18 +1,50 @@
 """
-1. create a excel file
-2. set the first sheet header
-3. invoke parser module to parse the MIG
+1. read original MIG file
+2. create a excel file
+3. set the first sheet header
+4. invoke parser module to parse the MIG
 """
 
+import pandas
+import os
 import xlsxwriter
 
-# upload the word file of UTILMDMIG.doc
+# upload the word file of 5.2e MIG.docx
+absolutepath = os.path.abspath(__file__)
+print(absolutepath)
 
+fileDirectory = os.path.dirname(absolutepath)
+print(fileDirectory)
+#Path of parent directory
+parentDirectory = os.path.dirname(fileDirectory)
+print(parentDirectory)
+#Navigate to data directory
+newPath = os.path.join(parentDirectory, 'data')   
+print(newPath)
 
-# create an excel file to save the data parsed
-workbook = xlsxwriter.Workbook('UTILMD MIG 5.2e.xlsx')
-worksheet = workbook.add_worksheet()
+try:
+    file = "\data\MIG52eOriginal.xlsx"
+    path = os.getcwd()+file
+    print(path)
 
+    """
+    1. parsing the original MIG to Dictionary with the first row as key
+    2. according to the EDI_MIG_HEADER.json to parse the row data
+        2.1 Level0/1/2/3/4 <= Ebene + Bez
+        2.2 Content(temparary null, which need to parsing from the word/pdf)
+        2.3 Repeat Times <= MaxWdhBDEW
+        2.4 Content Type <= Bez with leading "SG"
+        2.5 Desc. <= Inhalt
+    """    
+    mig_original = pandas.read_excel(path)
+    mig_dict = mig_original.to_dict('records')
+    print(mig_dict[0])
+    
+except FileNotFoundError:
+    print("Please check the path.")
 
+# # create an excel file to save the data parsed
+# workbook = xlsxwriter.Workbook('UTILMD MIG 5.2e.xlsx')
+# worksheet = workbook.add_worksheet()
 
-workbook.close()
+# workbook.close()
