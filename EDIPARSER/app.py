@@ -15,10 +15,10 @@ print(absolutepath)
 
 fileDirectory = os.path.dirname(absolutepath)
 print(fileDirectory)
-#Path of parent directory
+# Path of parent directory
 parentDirectory = os.path.dirname(fileDirectory)
 print(parentDirectory)
-#Navigate to data directory
+# Navigate to data directory
 newPath = os.path.join(parentDirectory, 'data')   
 print(newPath)
 
@@ -37,8 +37,24 @@ try:
         2.5 Desc. <= Inhalt
     """    
     mig_original = pandas.read_excel(path)
-    mig_dict = mig_original.to_dict('records')
-    print(mig_dict[0])
+    mig_original_dict = mig_original.to_dict('records')
+    
+    mig_keys = ['Level 0', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Content', 'Repeat Times', 'Content Type', 'Desc.']
+
+    for index in range(len(mig_original_dict)):
+        print(mig_original_dict[index])
+        # 2.1 Level0/1/2/3/4 <= Ebene + Bez
+        mig_layer = mig_original_dict[index]["Ebene"]
+        print(mig_layer)
+        # 2.3 Repeat Times <= MaxWdhBDEW
+        mig_repeat_times = mig_original_dict[index]["MaxWdhBDEW"]
+        print(mig_repeat_times)
+        # 2.4 Content Type <= Bez with leading "SG"
+
+        # 2.5 Desc. <= Inhalt
+        mig_desc = mig_original_dict[index]["Inhalt"]
+        print(mig_desc)
+
     
 except FileNotFoundError:
     print("Please check the path.")
