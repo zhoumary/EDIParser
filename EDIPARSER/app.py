@@ -83,6 +83,8 @@ try:
 
         mig_hierarchy.append(mig_hierarchy_dict)
         print(mig_hierarchy_dict)
+
+        # clearing value of mig_hierarchy_dict, but keeping the keys
         print(mig_hierarchy_dict.items())
         for mig_key, mig_value in mig_hierarchy_dict.items():
             del mig_hierarchy_dict[mig_key] 
