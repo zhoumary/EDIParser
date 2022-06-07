@@ -5,6 +5,7 @@
 4. invoke parser module to parse the MIG
 """
 
+from turtle import clear
 import pandas
 import os
 import xlsxwriter
@@ -39,21 +40,55 @@ try:
     mig_original = pandas.read_excel(path)
     mig_original_dict = mig_original.to_dict('records')
     
-    mig_keys = ['Level 0', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Content', 'Repeat Times', 'Content Type', 'Desc.']
+    mig_hierarchy = []
+    mig_hierarchy_dict = {'Level 0': "", 'Level 1': "", 'Level 2': "", 'Level 3': "", 'Level 4': "", 'Content': "", 'Repeat Times': "", 'Content Type': "", 'Desc.': ""}
 
     for index in range(len(mig_original_dict)):
         print(mig_original_dict[index])
+
         # 2.1 Level0/1/2/3/4 <= Ebene + Bez
         mig_layer = mig_original_dict[index]["Ebene"]
-        print(mig_layer)
+        mig_layer_content = mig_original_dict[index]["Bez"]
+        match mig_layer:
+            case 0: 
+                mig_hierarchy_dict["Level 0"] = mig_layer_content
+            case 1:
+                mig_hierarchy_dict["Level 1"] = mig_layer_content
+            case 2:
+                mig_hierarchy_dict["Level 2"] = mig_layer_content
+            case 3:
+                mig_hierarchy_dict["Level 3"] = mig_layer_content
+            case 4:
+                mig_hierarchy_dict["Level 4"] = mig_layer_content
+            case _:
+                print("Code not found")
+        
+        # 2.2 Content <= from the AHB document
+
+
         # 2.3 Repeat Times <= MaxWdhBDEW
         mig_repeat_times = mig_original_dict[index]["MaxWdhBDEW"]
-        print(mig_repeat_times)
-        # 2.4 Content Type <= Bez with leading "SG"
+        mig_hierarchy_dict["Repeat Times"] = mig_repeat_times
+
+        # 2.4 Content Type: Group or Element <= Bez with leading "SG"
+        if mig_layer_content.startswith("SG"):
+            mig_type = "Group"
+        else:
+            mig_type = "Element"
+        mig_hierarchy_dict["Content Type"] = mig_type
 
         # 2.5 Desc. <= Inhalt
         mig_desc = mig_original_dict[index]["Inhalt"]
-        print(mig_desc)
+        mig_hierarchy_dict["Desc."] = mig_desc
+
+        mig_hierarchy.append(mig_hierarchy_dict)
+        print(mig_hierarchy_dict)
+        print(mig_hierarchy_dict.items())
+        for mig_key, mig_value in mig_hierarchy_dict.items():
+            del mig_hierarchy_dict[mig_key] 
+        print(mig_hierarchy_dict.items())    
+
+    print(mig_hierarchy)
 
     
 except FileNotFoundError:
