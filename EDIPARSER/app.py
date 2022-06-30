@@ -81,6 +81,8 @@ try:
         mig_hierarchy_dict["Desc."] = mig_desc
 
         mig_hierarchy.append(mig_hierarchy_dict)
+
+        print(mig_hierarchy_dict)
         print(mig_hierarchy_dict.items())
         for mig_key, mig_value in mig_hierarchy_dict.items():
             if isinstance(mig_hierarchy_dict[mig_key], str):
