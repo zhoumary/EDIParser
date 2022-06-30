@@ -32,7 +32,7 @@ try:
     1. parsing the original MIG to Dictionary with the first row as key
     2. according to the EDI_MIG_HEADER.json to parse the row data
         2.1 Level0/1/2/3/4 <= Ebene + Bez
-        2.2 Content(temparary null, which need to parsing from the word/pdf)
+        2.2 Content(temparary null, which need to parsing from the MIG detailed content)
         2.3 Repeat Times <= MaxWdhBDEW
         2.4 Content Type <= Bez with leading "SG"
         2.5 Desc. <= Inhalt
@@ -44,7 +44,6 @@ try:
     mig_hierarchy_dict = {'Level 0': "", 'Level 1': "", 'Level 2': "", 'Level 3': "", 'Level 4': "", 'Content': "", 'Repeat Times': "", 'Content Type': "", 'Desc.': ""}
 
     for index in range(len(mig_original_dict)):
-        print(mig_original_dict[index])
 
         # 2.1 Level0/1/2/3/4 <= Ebene + Bez
         mig_layer = mig_original_dict[index]["Ebene"]
@@ -63,7 +62,7 @@ try:
             case _:
                 print("Code not found")
         
-        # 2.2 Content <= from the AHB document
+        # 2.2 Content <= from the AHB document, temparory null
 
 
         # 2.3 Repeat Times <= MaxWdhBDEW
@@ -82,11 +81,12 @@ try:
         mig_hierarchy_dict["Desc."] = mig_desc
 
         mig_hierarchy.append(mig_hierarchy_dict)
-        print(mig_hierarchy_dict)
         print(mig_hierarchy_dict.items())
         for mig_key, mig_value in mig_hierarchy_dict.items():
-            del mig_hierarchy_dict[mig_key] 
-        print(mig_hierarchy_dict.items())    
+            if isinstance(mig_hierarchy_dict[mig_key], str):
+                mig_hierarchy_dict[mig_key] = ""
+            else:
+                mig_hierarchy_dict[mig_key] = 0 
 
     print(mig_hierarchy)
 
@@ -94,8 +94,13 @@ try:
 except FileNotFoundError:
     print("Please check the path.")
 
-# # create an excel file to save the data parsed
-# workbook = xlsxwriter.Workbook('UTILMD MIG 5.2e.xlsx')
-# worksheet = workbook.add_worksheet()
+# create an excel file to save the data parsed
+workbook = xlsxwriter.Workbook('UTILMD MIG 5.2e.xlsx')
+worksheet = workbook.add_worksheet()
+# write the sheet header
+sheetheader = ['Level 0', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Content', 'Repeat Times', 'Content Type', 'Desc.']
 
-# workbook.close()
+
+# write the row data with mig_hierarchy
+
+workbook.close()
