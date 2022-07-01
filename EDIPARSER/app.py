@@ -10,7 +10,7 @@ import pandas
 import os
 import xlsxwriter
 
-# upload the word file of 5.2e MIG.docx
+# read the data from the path /data/MIG52eOriginal.xlsx
 absolutepath = os.path.abspath(__file__)
 print(absolutepath)
 
@@ -88,10 +88,7 @@ try:
             if isinstance(mig_hierarchy_dict[mig_key], str):
                 mig_hierarchy_dict[mig_key] = ""
             else:
-                mig_hierarchy_dict[mig_key] = 0 
-
-    print(mig_hierarchy)
-
+                mig_hierarchy_dict[mig_key] = 0
     
 except FileNotFoundError:
     print("Please check the path.")
@@ -101,8 +98,14 @@ workbook = xlsxwriter.Workbook('UTILMD MIG 5.2e.xlsx')
 worksheet = workbook.add_worksheet()
 # write the sheet header
 sheetheader = ['Level 0', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Content', 'Repeat Times', 'Content Type', 'Desc.']
-
+# Start from the first cell. Rows and columns are zero indexed.
+row = 0
+col = 0
+# Iterate over the data and write it out row by row.
+for item in (sheetheader):
+    worksheet.write(row, col + 1, item)
 
 # write the row data with mig_hierarchy
+
 
 workbook.close()
