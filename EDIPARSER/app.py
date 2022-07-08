@@ -6,22 +6,11 @@
 """
 
 from turtle import clear
+from xml.dom.minidom import Document
 import pandas
 import os
 import xlsxwriter
-
-# read the data from the path /data/MIG52eOriginal.xlsx
-absolutepath = os.path.abspath(__file__)
-print(absolutepath)
-
-fileDirectory = os.path.dirname(absolutepath)
-print(fileDirectory)
-# Path of parent directory
-parentDirectory = os.path.dirname(fileDirectory)
-print(parentDirectory)
-# Navigate to data directory
-newPath = os.path.join(parentDirectory, 'data')   
-print(newPath)
+from docx.api import Document
 
 try:
     file = "\data\MIG52eOriginal.xlsx"
@@ -62,8 +51,7 @@ try:
             case _:
                 print("Code not found")
         
-        # 2.2 Content <= from the AHB document, temparory null
-
+        # 2.2 Content <= from the AHB document
 
         # 2.3 Repeat Times <= MaxWdhBDEW
         mig_repeat_times = mig_original_dict[index]["MaxWdhBDEW"]
@@ -80,10 +68,8 @@ try:
         mig_desc = mig_original_dict[index]["Inhalt"]
         mig_hierarchy_dict["Desc."] = mig_desc
 
-        mig_hierarchy.append(mig_hierarchy_dict)
+        mig_hierarchy.append(mig_hierarchy_dict.copy())
 
-        print(mig_hierarchy_dict)
-        print(mig_hierarchy_dict.items())
         for mig_key, mig_value in mig_hierarchy_dict.items():
             if isinstance(mig_hierarchy_dict[mig_key], str):
                 mig_hierarchy_dict[mig_key] = ""
@@ -92,6 +78,42 @@ try:
     
 except FileNotFoundError:
     print("Please check the path.")
+
+# read the data from the path /data/MIG52eUTILMD.docx
+try:
+    mig_file = "\data\MIG52eUTILMD.docx"
+    mig_doc_path = os.getcwd()+mig_file
+    mig_document = Document(mig_doc_path)
+    mig_tables = mig_document.tables
+
+    """
+    parsing the 5.2e MIG document, and find the data value of each seg. and ele.
+    1. get the description of each seg. or element
+    2. find the table which has the string is same as the description
+        a. get the rows which describe the hierarchy of the current seg. or element, which
+           last row is the current one
+        a. get the row with "Beispiel:"
+        b. get the row under the "Beispiel:", and read the first line as the Content
+    """
+    for mig_item in mig_hierarchy:
+        mig_item_desc = mig_item["Desc."]
+        for mig_table in mig_tables:
+            mig_rows = mig_table.rows
+            data = []
+            keys = None
+            for i, mig_row in enumerate(mig_rows):
+                text = (cell.text for cell in mig_row.cells)
+                if i == 0:
+                    keys = tuple(text)
+                    continue
+                row_data = dict(zip(keys, text))
+                data.append(row_data.copy()) # get the table data successfully!!!
+
+
+except FileNotFoundError:
+    print("Please check the path.")
+
+# read the data from the path /data/MIG52eUTILMD.docx
 
 # create an excel file to save the data parsed
 workbook = xlsxwriter.Workbook('UTILMD MIG 5.2e.xlsx')
@@ -102,10 +124,18 @@ sheetheader = ['Level 0', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Content',
 row = 0
 col = 0
 # Iterate over the data and write it out row by row.
-for item in (sheetheader):
-    worksheet.write(row, col + 1, item)
+for item in sheetheader:
+    worksheet.write(row, col, item)
+    col = col + 1
 
 # write the row data with mig_hierarchy
-
+row = 0
+col = 0
+for mig_hierarchy_item in mig_hierarchy:
+    row = row + 1
+    col = 0
+    for item in sheetheader:
+        worksheet.write(row, col, mig_hierarchy_item[item])
+        col = col + 1
 
 workbook.close()
