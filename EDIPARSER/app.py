@@ -76,6 +76,9 @@ try:
             else:
                 mig_hierarchy_dict[mig_key] = 0
     
+    # Construct the MIG hierarchy
+    
+
 except FileNotFoundError:
     print("Please check the path.")
 
@@ -89,7 +92,7 @@ try:
     """
     parsing the 5.2e MIG document, and find the data value of each seg. and ele.
     1. get the description of each seg. or element
-    2. find the table which has the string is same as the description
+    2. find the table which has the string is same as the description and with the same hierarchy
         a. get the rows which describe the hierarchy of the current seg. or element, which
            last row is the current one
         a. get the row with "Beispiel:"
@@ -101,6 +104,7 @@ try:
             mig_rows = mig_table.rows
             data = []
             keys = None
+            is_exact_mig = False
             for i, mig_row in enumerate(mig_rows):
                 text = (cell.text for cell in mig_row.cells)
                 if i == 0:
@@ -108,6 +112,18 @@ try:
                     continue
                 row_data = dict(zip(keys, text))
                 data.append(row_data.copy()) # get the table data successfully!!!
+            for mig_table_index in range(len(data)):
+                for mig_table_key in data[mig_table_index]:
+                    if data[mig_table_index][mig_table_key] == mig_item_desc:
+                        is_exact_mig = True
+
+                    # get the row with string "Beispiel"
+                    if data[mig_table_index][mig_table_key] == "Beispiel:" and is_exact_mig == True:
+                        # get the row next "Beispiel", and get the first line
+                        mig_item["Content"] = data[mig_table_index+1][mig_table_key].split('\n', 1)[0]
+                    
+            if is_exact_mig:
+                break
 
 
 except FileNotFoundError:
