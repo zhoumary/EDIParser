@@ -76,8 +76,29 @@ try:
             else:
                 mig_hierarchy_dict[mig_key] = 0
     
-    # Construct the MIG hierarchy
-    
+    # Construct the MIG hierarchy, id is combined with level content and description
+    mig_hierarchy_new = []
+    mig_hierarchy_new_dict = {'id': "", 'level': "", 'type': "", 'parent': "", 'parentLevel': "", 'parentType': ""}
+
+    for mig_item in mig_hierarchy:
+        level = ""
+        if mig_item["Level 0"] != "":
+            level = "0"
+        elif mig_item["Level 1"] != "":
+            level = "1"
+        elif mig_item["Level 2"] != "":
+            level = "2"
+        elif mig_item["Level 3"] != "":
+            level = "3"
+        elif mig_item["Level 4"] != "":
+            level = "4"
+        
+        match level:
+            case "0":
+                mig_hierarchy_new_dict["id"] = mig_item["Level 0"] + "_" + mig_item["Desc."]
+                mig_hierarchy_new_dict["level"] = "0"
+                mig_hierarchy_new_dict["type"] = mig_item["Content Type"]
+                
 
 except FileNotFoundError:
     print("Please check the path.")
@@ -100,6 +121,9 @@ try:
     """
     for mig_item in mig_hierarchy:
         mig_item_desc = mig_item["Desc."]
+        mig_item_type = mig_item["Content Type"]
+        if mig_item_type == "Group":
+            break
         for mig_table in mig_tables:
             mig_rows = mig_table.rows
             data = []
